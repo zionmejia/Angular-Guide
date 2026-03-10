@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-
+import {Component, Input, input, computed} from '@angular/core';
+// input (lower case) = special function
 @Component({
   selector: 'app-user',
   standalone: true,
@@ -16,5 +16,15 @@ export class UserComponent {
     return './assets/users/' + this.avatar;
   }
 
-  public onSelectUser () {}
+  // Signals learned but not being used
+  // public avatar = input.required<string>();
+  // public name = input.required<string>();
+  //
+  // public imagePath = computed (() => {
+  //   return "assets/users/" + this.avatar();
+  // });
+
+  public onSelectUser () {
+
+  }
 }
