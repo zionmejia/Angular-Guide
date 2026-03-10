@@ -1,5 +1,14 @@
 import {Component, Input, input, computed, Output, output, EventEmitter, OutputEmitterRef} from '@angular/core';
+
 // input (lower case) = special function
+
+// type User = { id: number; name: string; avatar: string;};
+interface User {
+  id: string;
+  name: string;
+  avatar: string;
+}
+
 @Component({
   selector: 'app-user',
   standalone: true,
@@ -9,12 +18,11 @@ import {Component, Input, input, computed, Output, output, EventEmitter, OutputE
 })
 
 export class UserComponent {
-  @Input({required: true}) id!: string;
-  @Input({required: true}) avatar!: string;
-  @Input({required: true}) name!: string;
-  @Output() select:EventEmitter<string> = new EventEmitter();
+  @Input({required: true}) user!: User;
+  @Output() select: EventEmitter<string> = new EventEmitter();
+
   public get imagePath(): string {
-    return './assets/users/' + this.avatar;
+    return './assets/users/' + this.user.avatar;
   }
 
   // Signals learned but not being used
@@ -26,7 +34,7 @@ export class UserComponent {
   //   return "assets/users/" + this.avatar();
   // });
 
-  public onSelectUser () {
-    this.select.emit(this.id);
+  public onSelectUser() {
+    this.select.emit(this.user.id);
   }
 }
