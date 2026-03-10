@@ -1,4 +1,4 @@
-import {Component, Input, input, computed, Output, EventEmitter} from '@angular/core';
+import {Component, Input, input, computed, Output, output, EventEmitter, OutputEmitterRef} from '@angular/core';
 // input (lower case) = special function
 @Component({
   selector: 'app-user',
@@ -12,17 +12,17 @@ export class UserComponent {
   @Input({required: true}) id!: string;
   @Input({required: true}) avatar!: string;
   @Input({required: true}) name!: string;
-  @Output() select = new EventEmitter();
-
-  public get imagePath(){
+  @Output() select:EventEmitter<string> = new EventEmitter();
+  public get imagePath(): string {
     return './assets/users/' + this.avatar;
   }
 
   // Signals learned but not being used
-  // public avatar = input.required<string>();
-  // public name = input.required<string>();
+  // public avatar:string = input.required<string>();
+  // public name:string = input.required<string>();
+  // public select:OutputEmitterRef<string>= output<string>(); @@@ output with signal
   //
-  // public imagePath = computed (() => {
+  // public imagePath = computed (() :string => {
   //   return "assets/users/" + this.avatar();
   // });
 
