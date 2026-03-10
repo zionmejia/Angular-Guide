@@ -21,8 +21,6 @@ export class AppComponent {
   public selectedUser: { id: string; name: string; avatar: string } | null = null;
 
   public onSelectUser(id: string) {
-    const user = this.users.find(u => u.id === id) || null;
-    this.selectedUser = user;
-    return this.selectedUser;
+    this.selectedUser = this.users.find(u => u.id === id) || null;
   }
 }
