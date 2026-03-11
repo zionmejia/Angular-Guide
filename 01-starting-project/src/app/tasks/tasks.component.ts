@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TaskComponent} from "./task/task.component";
-import {AddTaskComponent} from "./addTask/addTask.component";
+import {NewTaskComponent} from "./new-task/new-task.component";
 import {Task} from "./task/task.model";
 
 @Component({
@@ -8,7 +8,7 @@ import {Task} from "./task/task.model";
   standalone: true,
   imports: [
     TaskComponent,
-    AddTaskComponent
+    NewTaskComponent
   ],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.css',
