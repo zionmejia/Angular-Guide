@@ -14,6 +14,6 @@
     }
   </ul>
   @if (showTaskForm) {
-    <new-task (toggle)="toggleTaskForm()" ></new-task>
+    <new-task (toggle)="toggleTaskForm()" (add)="onAddTask($event)" ></new-task>
   }
 </section>

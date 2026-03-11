@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TaskComponent} from "./task/task.component";
 import {NewTaskComponent} from "./new-task/new-task.component";
-import {Task} from "./task/task.model";
+import {type NewTaskData} from "./task/task.model";
 
 @Component({
   selector: 'app-tasks',
@@ -20,9 +20,6 @@ export class TasksComponent {
 
   public showTaskForm = false;
 
-  public toggleTaskForm() {
-    this.showTaskForm = !this.showTaskForm; // optional if parent needs to know
-  }
 
   public tasks = [
     {
@@ -50,12 +47,28 @@ export class TasksComponent {
     },
   ];
 
+  public toggleTaskForm() {
+    this.showTaskForm = !this.showTaskForm;
+  }
+
   get selectedUserTasks() {
     return this.tasks.filter((task) => task.userId === this.userId);
   }
 
   public onCompleteTask(id: string) {
     this.tasks = this.tasks.filter((task) => task.id !== id);
+  }
+
+  onAddTask(taskData: NewTaskData) {
+    this.tasks.push({
+      id: new Date().getTime().toString(),
+      userId: this.userId,
+      title: taskData.title,
+      summary: taskData.summary,
+      dueDate: taskData.date
+    })
+    this.showTaskForm = !this.showTaskForm;
+    console.log(this.tasks)
   }
 
 }
