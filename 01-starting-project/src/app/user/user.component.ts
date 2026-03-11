@@ -1,5 +1,6 @@
 import {Component, Input, input, computed, Output, output, EventEmitter, OutputEmitterRef} from '@angular/core';
 import {User} from "./user.model"
+import {CardComponent} from "../shared/card/card.component";
 // input (lower case) = special function
 
 // type User = { id: number; name: string; avatar: string;};
@@ -7,7 +8,9 @@ import {User} from "./user.model"
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [],
+  imports: [
+    CardComponent
+  ],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css'
 })
