@@ -1,11 +1,14 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TaskComponent} from "./task/task.component";
+import {AddTaskComponent} from "./addTask/addTask.component";
+import {Task} from "./task/task.model";
 
 @Component({
   selector: 'app-tasks',
   standalone: true,
   imports: [
-    TaskComponent
+    TaskComponent,
+    AddTaskComponent
   ],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.css',
@@ -14,6 +17,13 @@ import {TaskComponent} from "./task/task.component";
 export class TasksComponent {
   @Input({required: true}) userId!: string;
   @Input({required: true}) name!: string;
+
+  public showTaskForm = false;
+
+  public toggleTaskForm() {
+    this.showTaskForm = !this.showTaskForm; // optional if parent needs to know
+  }
+
   public tasks = [
     {
       id: 't1',
@@ -41,11 +51,11 @@ export class TasksComponent {
   ];
 
   get selectedUserTasks() {
-    return this.tasks.filter((task) => task.userId===this.userId);
+    return this.tasks.filter((task) => task.userId === this.userId);
   }
 
-  public onCompleteTask(id:string) {
-    this.tasks = this.tasks.filter((task) => task.id !==id);
+  public onCompleteTask(id: string) {
+    this.tasks = this.tasks.filter((task) => task.id !== id);
   }
 
 }
