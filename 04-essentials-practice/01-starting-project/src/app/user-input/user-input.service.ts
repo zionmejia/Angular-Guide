@@ -5,7 +5,7 @@ import {AnnualData} from "./user-input.interface";
 
 export class UserInputService {
 
-  calculateUserInvestments(initialInvestment: number, annualInvestment: number, expectedReturn: number, duration: number): AnnualData[] {
+  public calculateUserInvestments(initialInvestment: number, annualInvestment: number, expectedReturn: number, duration: number): AnnualData[] {
 
     const annualData = [];
     let investmentValue = initialInvestment;

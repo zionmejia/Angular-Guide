@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, signal, WritableSignal} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {InvestmentResultComponent} from "./investment-result/investment-result.component";
 import {UserInputService} from "./user-input.service";
@@ -14,19 +14,19 @@ import {AnnualData} from "./user-input.interface";
 })
 
 export class UserInputComponent {
-  public initialInvestment: number = 10000;
-  public annualInvestment: number = 1000;
-  public expectedReturn: number = 5;
-  public duration: number = 10;
+  public initialInvestment = signal(10000);
+  public annualInvestment = signal(1000);
+  public expectedReturn = signal(5);
+  public duration = signal(10);
 
-  public results: AnnualData[] = [];
+  public results: WritableSignal<AnnualData[]> = signal([]);
 
   constructor(private userInputService: UserInputService) {
 
   }
 
   calculateInvestment() {
-    this.results = this.userInputService.calculateUserInvestments(this.initialInvestment,this.annualInvestment,this.expectedReturn,this.duration);
+    this.results.set(this.userInputService.calculateUserInvestments(this.initialInvestment(), this.annualInvestment(), this.expectedReturn(), this.duration()));
   }
 
 }
