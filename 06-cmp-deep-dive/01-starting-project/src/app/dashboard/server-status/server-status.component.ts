@@ -1,4 +1,5 @@
 import {Component, DestroyRef, effect, inject, OnInit, signal} from '@angular/core';
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-server-status',
@@ -10,6 +11,7 @@ import {Component, DestroyRef, effect, inject, OnInit, signal} from '@angular/co
 export class ServerStatusComponent implements OnInit {
 
   public currentStatus = signal<'online' | 'offline' | 'unknown'>('offline');
+  private interval?: ReturnType<typeof setInterval>;
   private destroyerRed = inject(DestroyRef);
 
   constructor() {
@@ -17,6 +19,7 @@ export class ServerStatusComponent implements OnInit {
       console.log(this.currentStatus);
     });
   }
+
   ngOnInit() {
     console.log('ON INIT');
     const interval = setInterval(() => {
@@ -29,7 +32,15 @@ export class ServerStatusComponent implements OnInit {
       } else {
         this.currentStatus.set('unknown');
       }
-    })
+    }, 5000)
+  }
+
+  ngAfterViewInit() {
+    console.log('AFTER VIEW INIT');
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.interval);
   }
 
 }
