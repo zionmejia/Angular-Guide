@@ -1,0 +1,19 @@
+<form #form="ngForm" (ngSubmit)="onSubmit(form)">
+  <h2>Login</h2>
+
+  <div class="control-row">
+    <div class="control no-margin">
+      <label for="email">Email</label>
+      <input id="email" type="email" name="email" #email="ngModel" ngModel required email/>
+    </div>
+
+    <div class="control no-margin">
+      <label for="password">Password</label>
+      <input id="password" type="password" name="password" #password="ngModel" ngModel minlength="4" />
+    </div>
+  <button class="button">Login</button>
+  </div>
+  @if (email.touched && password.touched && form.form.invalid) {
+    <p class="control-error">Invalid</p>
+  }
+</form>
