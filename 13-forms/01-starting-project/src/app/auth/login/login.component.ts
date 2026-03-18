@@ -1,61 +1,83 @@
-import {afterNextRender, Component, DestroyRef, inject, viewChild} from '@angular/core';
-import {FormGroup, FormsModule, NgForm} from "@angular/forms";
-import {debounceTime, timeout} from "rxjs";
+import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {debounceTime, of} from "rxjs";
+
+function mustContainQuestionMark(control: AbstractControl) {
+  if (control.value.includes('?')) {
+    return null;
+  }
+
+  return {doesNotContainQuestionMark: true};
+}
+
+function emailIsUnique(control: AbstractControl) {
+  if (control.value !== "example@email.com") {
+    return of(null);
+  }
+  return of({notUnique: true});
+}
+let letinitialEmailValue = ''
+const savedForm = window.localStorage.getItem("saved-login-form");
+if (savedForm) {
+  const loadedForm = JSON.parse(savedForm);
+  letinitialEmailValue = loadedForm.email;
+}
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
+  imports: [
+    ReactiveFormsModule
+  ]
 })
+export class LoginComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
 
-export class LoginComponent {
-  public form = viewChild.required<NgForm>('form');
-  public destroyRef = inject(DestroyRef);
+  public form = new FormGroup({
+    email: new FormControl(letinitialEmailValue, {
+      validators: [Validators.required, Validators.email],
+      asyncValidators: [emailIsUnique],
+    }),
+    password: new FormControl('', {
+      validators: [Validators.required, Validators.minLength(6), mustContainQuestionMark],
+    })
+  });
 
-  constructor() {
-    afterNextRender(() => {
-      const savedForm = window.localStorage.getItem("login-form-email");
+  public onSubmit() {
+    console.log(this.form);
+    const enteredEmail = this.form.value.email;
+    const enteredPassword = this.form.value.password;
+  }
 
-      if (savedForm) {
-        try {
-          const loadedFormData = JSON.parse(savedForm);
-          const savedEmail = loadedFormData.email;
-          this.form().controls['email'].setValue(savedEmail);
-        } catch (e) {
-          console.warn('Invalid saved form in localStorage:', savedForm);
-          // optionally remove the invalid value
-          window.localStorage.removeItem("login-form-email");
+  get emailIsInvalid() {
+    return (
+      this.form.controls.email.touched &&
+      this.form.controls.email.dirty &&
+      this.form.controls.email.invalid
+    );
+  }
+
+  get passwordIsInvalid() {
+    return (
+      this.form.controls.password.touched &&
+      this.form.controls.password.dirty &&
+      this.form.controls.password.invalid
+    );
+  }
+
+  ngOnInit() {
+
+
+    const subscription = this.form.valueChanges.pipe(debounceTime(500)).subscribe({
+        next: (value) => {
+          window.localStorage.setItem('saved-login-form', JSON.stringify({email: value.email}));
         }
-
-        const loadedFormData = JSON.parse(savedForm);
-        const savedEmail = loadedFormData.email;
-        setTimeout(() => {
-          this.form().controls['email'].setValue(savedEmail);
-        }, 1)
       }
-      // @ts-ignore
-      const subscription = this.form()?.valueChanges?.pipe(debounceTime(500)).subscribe({
-        next: (value: any) =>
-          window.localStorage.setItem('login-form-email', JSON.stringify({email: value.email})
-        ),
-      })
-      this.destroyRef.onDestroy(() => subscription?.unsubscribe());
-    });
+    )
+    this.destroyRef.onDestroy(() => subscription.unsubscribe());
   }
 
-  public onSubmit(formData: NgForm) {
-    const enteredEmail = formData.form.value.email;
-    const enteredPassword = formData.form.value.password;
-
-    if (formData.form.invalid) {
-      console.log("failed");
-      return;
-    }
-
-    console.log(formData.form.valid);
-    formData.reset();
-  }
 
 }
