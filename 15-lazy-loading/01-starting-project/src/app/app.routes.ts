@@ -9,6 +9,7 @@ import {
   resolveUserName,
 } from './users/user-tasks/user-tasks.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import {TasksComponent} from "./tasks/tasks.component";
 
 const dummyCanMatch: CanMatchFn = (route, segments) => {
   const router = inject(Router);
@@ -21,27 +22,35 @@ const dummyCanMatch: CanMatchFn = (route, segments) => {
 
 export const routes: Routes = [
   {
-    path: '', // <your-domain>/
-    component: NoTaskComponent,
-    // redirectTo: '/users/u1',
-    // pathMatch: 'full'
-    title: 'No task selected',
-  },
-  {
-    path: 'users/:userId', // <your-domain>/users/<uid>
-    component: UserTasksComponent,
-    children: userRoutes,
-    canMatch: [dummyCanMatch],
-    data: {
-      message: 'Hello!',
-    },
-    resolve: {
-      userName: resolveUserName,
-    },
-    title: resolveTitle,
-  },
-  {
-    path: '**',
-    component: NotFoundComponent,
-  },
+    path: '',
+    providers: [TasksComponent],
+    children: [
+      {
+        path: '', // <your-domain>/
+        component: NoTaskComponent,
+        // redirectTo: '/users/u1',
+        // pathMatch: 'full'
+        title: 'No task selected',
+      },
+      {
+        path: 'users/:userId', // <your-domain>/users/<uid>
+        component: UserTasksComponent,
+        loadChildren: () =>
+          import('./users/users.routes').then((mod) => mod.routes),
+        canMatch: [dummyCanMatch],
+        data: {
+          message: 'Hello!',
+        },
+        resolve: {
+          userName: resolveUserName,
+        },
+        title: resolveTitle,
+      },
+      {
+        path: '**',
+        component: NotFoundComponent,
+      },
+    ]
+  }
+
 ];
